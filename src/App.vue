@@ -1,16 +1,32 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+  <h3>单音练习</h3>
+  <SingleNote @play="play" v-for="note in notes" :key="note.id" :note="note" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import HelloWorld from "./components/HelloWorld.vue";
+import Sound from "./modules/Sound";
+import SingleNote from "./components/SingleNote.vue";
+import notes from "./data/notes";
+import { Note } from "./interface/note";
+let context = new (window.AudioContext || (window as any).webkitAudioContext)();
+const sound = new Sound(context);
 
 export default defineComponent({
   name: "App",
+  setup() {
+    const play = (note: Note) => {
+      let value = note.frequency;
+      sound.play(value);
+      sound.stop();
+    };
+    return {
+      notes,
+      play,
+    };
+  },
   components: {
-    HelloWorld,
+    SingleNote,
   },
 });
 </script>
